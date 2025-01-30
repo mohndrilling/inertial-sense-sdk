@@ -47,13 +47,15 @@ void odometryIdentity(nav_msgs::msg::Odometry& msg_odom) {
     }
 }
 
-InertialSenseROS::InertialSenseROS(YAML::Node paramNode, bool configFlashParameters): nh_(rclcpp::Node::make_shared("nh_"))
+InertialSenseROS::InertialSenseROS(YAML::Node paramNode, bool configFlashParameters): nh_(rclcpp::Node::make_shared("inertial_sense_node"))
 {
     // Should always be enabled by default
     rs_.did_ins1.enabled = true;
     rs_.did_ins1.topic = "did_ins1";
-    rs_.gps1.enabled = true;
+    rs_.gps1.enabled = false;
     rs_.gps1.topic = "/gps";
+
+    rs_.gps1_navsatfix.enabled = false;
 
    //if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug))
    //{
@@ -497,8 +499,10 @@ void InertialSenseROS::configure_data_streams()
     }
 
 void InertialSenseROS::configure_data_streams(bool firstrun) // if firstrun is true each step will be attempted without returning
-{
-    if (!rs_.gps1.streaming_pos) // we always need GPS for Fix status
+{   
+    // rs_.gps1.enabled = false;
+    std::cout << "GPS1 enabled!!!!!: " << rs_.gps1.enabled << std::endl;
+    if (!rs_.gps1.streaming_pos && rs_.gps1.enabled) // we always need GPS for Fix status
     {
         rclcpp::Logger logger_gps1pos = rclcpp::get_logger("gps1_pos");
         logger_gps1pos.set_level(rclcpp::Logger::Level::Debug);

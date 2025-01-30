@@ -96,6 +96,8 @@ rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_t
 target_link_libraries(${PROJECT_NAME}_node "${cpp_typesupport_target}")
 ament_target_dependencies(${PROJECT_NAME}_node rclcpp std_msgs geometry_msgs nav_msgs diagnostic_msgs sensor_msgs std_srvs)
 target_link_libraries(${PROJECT_NAME}_node InertialSenseSDK ${YAML_CPP_LIBRARIES} pthread)
+install(TARGETS ${PROJECT_NAME}_node
+        DESTINATION lib/${PROJECT_NAME})
 
 
 ament_add_gtest(test_${PROJECT_NAME}
@@ -119,5 +121,10 @@ target_link_libraries(test_${PROJECT_NAME} InertialSenseSDK ${YAML_CPP_LIBRARIES
 #link_directories(/home/s/Inertial_Sense/imx/ros2_ws/src/inertial-sense-sdk)
 install(TARGETS test_${PROJECT_NAME}
         DESTINATION lib/${PROJECT_NAME})
+
+install(DIRECTORY 
+    launch 
+    config
+    DESTINATION share/${PROJECT_NAME}/)
 
 ament_package()
